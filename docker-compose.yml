@@ -1,0 +1,27 @@
+version: '3'
+services:
+    servweb:
+        image: lbouquet/ubuntu:apache2-php7
+        container_name: stages-serveur-web
+        volumes:
+            - ./codePHP/geststages/:/var/www/html
+        links:
+            - servbd 
+        ports:
+            - 80:80
+        entrypoint: /usr/sbin/apache2ctl -D FOREGROUND
+    servbd:
+        image: mariadb:10.5
+        container_name: stages-serveur-bd
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: Adminsql
+            MYSQL_USER: usergs
+            MYSQL_PASSWORD: mdpGS
+            MYSQL_DATABASE: bdd_geststages
+        volumes:
+            - ./bdMySQL/:/var/lib/mysql
+            - ./initSQL/:/docker-entrypoint-initdb.d
+        ports:
+            - 3306:3306
+
